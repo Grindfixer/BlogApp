@@ -47,8 +47,11 @@ public class MainActivity extends AppCompatActivity {
 
                 mUser = firebaseAuth.getCurrentUser();
 
-                if (mUser !=null) {
+                if (mUser != null) {
                     Toast.makeText(MainActivity.this, "Signed in", Toast.LENGTH_LONG).show();
+
+                    startActivity(new Intent(MainActivity.this, PostListActivity.class));
+                    finish();
                 }else {
                     Toast.makeText(MainActivity.this, "Not signed in", Toast.LENGTH_LONG).show();
                 }
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(new Intent(MainActivity.this, PostListActivity.class));
                         } else {
                             // Sign in failed
-                            Toast.makeText(MainActivity.this, "Sign fail", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Sign in fail", Toast.LENGTH_LONG).show();
 
 
                         }//end else
