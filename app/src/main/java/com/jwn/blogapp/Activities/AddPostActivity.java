@@ -1,8 +1,10 @@
-package com.jwn.blogapp;
+package com.jwn.blogapp.Activities;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.jwn.blogapp.R;
 
 public class AddPostActivity extends AppCompatActivity {
 
