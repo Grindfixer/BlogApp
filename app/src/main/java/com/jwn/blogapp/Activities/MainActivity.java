@@ -87,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "Sign in succsesful", Toast.LENGTH_LONG).show();
 
                             startActivity(new Intent(MainActivity.this, PostListActivity.class));
+
+                            //clear previous activity from device
+                            finish();
+
                         } else {
                             // Sign in failed
                             Toast.makeText(MainActivity.this, "Sign in fail", Toast.LENGTH_LONG).show();

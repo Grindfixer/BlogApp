@@ -55,12 +55,24 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
         imageUrl = blog.getImage();
 
+
+
+
+        //TODO: Use Picasso to load image
+
+
+
+
     }//end public void onBindViewHolder
+
+
 
     @Override
     public int getItemCount() {
+
         return blogList.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -69,22 +81,23 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         public ImageView image;
         String userid;
 
-        public ViewHolder(@NonNull View itemView, Context ctx) {
-            super(itemView);
+        public ViewHolder(@NonNull View view, Context ctx) {
+            super(view);
 
             context = ctx;
-            title =itemView.findViewById(R.id.postTitleList);
-            desc = itemView.findViewById(R.id.postTextList);
-            image = itemView.findViewById(R.id.postImageList);
-            timestamp = itemView.findViewById(R.id.timestampList);
+            title =view.findViewById(R.id.postTitleList);
+            desc = view.findViewById(R.id.postTextList);
+            image = view.findViewById(R.id.postImageList);
+            timestamp = view.findViewById(R.id.timestampList);
 
             userid = null;
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View v) {
                     // go to the next activity
                 }
+
             });
 
         }//end public ViewHolder

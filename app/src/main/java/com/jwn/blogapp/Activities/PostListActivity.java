@@ -30,7 +30,6 @@ public class PostListActivity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
 
 
-
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference().child("MBlog");
         mDatabaseReference.keepSynced(true);

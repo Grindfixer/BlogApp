@@ -6,5 +6,6 @@
     <string name="create_act">Create Account</string>
     <string name="post_title">Post Title</string>
     <string name="post_description">Post Description</string>
-    <string name="submit_post">Submit Post</string>
+    <string name="submit_text">Submit</string>
+
 </resources>

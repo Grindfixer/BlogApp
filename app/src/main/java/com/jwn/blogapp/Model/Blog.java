@@ -3,7 +3,7 @@ package com.jwn.blogapp.Model;
 public class Blog {
     public String title, desc, image, timestamp, userid;
 
-    public Blog() {
+    public Blog(String title, String description) {
         // need this empty constructor when adding the items to database
     }
 
