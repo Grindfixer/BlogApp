@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,8 +20,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.jwn.blogapp.Model.Blog;
+import com.google.firebase.storage.UploadTask;
 import com.jwn.blogapp.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddPostActivity extends AppCompatActivity {
 
@@ -32,6 +34,7 @@ public class AddPostActivity extends AppCompatActivity {
     private StorageReference mStorage;
     private DatabaseReference mPostDatabase;
     private FirebaseDatabase mDatabase;
+
     private FirebaseUser mUser;
     private FirebaseAuth mAuth;
     private ProgressDialog mProgress;
@@ -48,6 +51,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+
         mStorage = FirebaseStorage.getInstance().getReference();
 
         mPostDatabase = FirebaseDatabase.getInstance().getReference().child("MBlog");
@@ -96,18 +100,31 @@ public class AddPostActivity extends AppCompatActivity {
         mProgress.setMessage("Posting to blog...");
         mProgress.show();
 
-         String titleVal = mPostTitle.getText().toString().trim();
-         String descVal = mPostDesc.getText().toString().trim();
+         final String titleVal = mPostTitle.getText().toString().trim();
+         final String descVal = mPostDesc.getText().toString().trim();
 
         if (!TextUtils.isEmpty(titleVal) && !TextUtils.isEmpty(descVal) && mImageUri != null) {
             //start uploading
 
-            Blog blog = new Blog("title", "description","imageurl", "timestamp", "userid");
-
-            mPostDatabase.setValue(blog).addOnSuccessListener(new OnSuccessListener<Void>() {
+            StorageReference filepath =
+                    mStorage.child("MBlog_images").child(mImageUri.getLastPathSegment());
+            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(getApplicationContext(), "Item added", Toast.LENGTH_LONG).show();
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    String downloadurl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
+                    DatabaseReference newPost = mPostDatabase.push();
+
+                    Map<String, String> dataToSave = new HashMap<>();
+                    dataToSave.put("title", titleVal);
+                    dataToSave.put("desc", descVal);
+                    dataToSave.put("image", downloadurl);
+                    dataToSave.put("timestamp", String.valueOf(java.lang.System.currentTimeMillis()));
+                    dataToSave.put("userid", mUser.getUid());
+
+                    newPost.setValue(dataToSave);
+
                     mProgress.dismiss();
 
                 }
