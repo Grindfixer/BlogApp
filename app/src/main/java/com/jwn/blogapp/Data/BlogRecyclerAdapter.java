@@ -59,7 +59,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
 
         //TODO: Use Picasso to load image
-
+        
 
 
 

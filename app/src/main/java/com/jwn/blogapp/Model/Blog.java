@@ -15,6 +15,9 @@ public class Blog {
         this.userid = userid;
     }
 
+    public Blog() {
+    }
+
     public String getTitle() {
         return title;
     }

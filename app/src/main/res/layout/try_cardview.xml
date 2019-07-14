@@ -13,7 +13,7 @@
             android:id="@+id/postImageList"
             android:adjustViewBounds="true"
             android:cropToPadding="false"
-            android:src="@color/cardview_dark_background"
+           android:background="@mipmap/add_btn"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

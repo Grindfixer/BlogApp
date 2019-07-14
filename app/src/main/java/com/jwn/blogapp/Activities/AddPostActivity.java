@@ -127,6 +127,9 @@ public class AddPostActivity extends AppCompatActivity {
 
                     mProgress.dismiss();
 
+                    startActivity(new Intent(AddPostActivity.this, PostListActivity.class));
+                    finish();
+
                 }
             });
 
