@@ -12,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jwn.blogapp.Model.Blog;
 import com.jwn.blogapp.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 import java.util.List;
+
+
 
 public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapter.ViewHolder>{
 
@@ -57,9 +60,8 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
 
 
-
         //TODO: Use Picasso to load image
-        
+        Picasso.get().load(imageUrl).into(holder.image);
 
 
 

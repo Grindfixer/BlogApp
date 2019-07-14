@@ -53,6 +53,8 @@ public class PostListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(blogRecyclerAdapter);
+
     }
 /*onCreateOptionsMenu &  onOptionsItemSelected allow menu to be inflated so we can see it */
     @Override
