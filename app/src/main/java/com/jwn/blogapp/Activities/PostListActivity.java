@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.jwn.blogapp.Model.Blog;
 import com.jwn.blogapp.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PostListActivity extends AppCompatActivity {
@@ -52,53 +54,13 @@ public class PostListActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
 
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(manager);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        blogRecyclerAdapter = new BlogRecyclerAdapter(PostListActivity.this, blogList);
-
-        recyclerView.setAdapter(blogRecyclerAdapter);
 
     }
-/*onCreateOptionsMenu &  onOptionsItemSelected allow menu to be inflated so we can see it */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.action_add:
-
-                if (mUser != null && mAuth != null) {
-
-                    startActivity(new Intent(PostListActivity.this,  AddPostActivity.class));
-                    //clear the previous activity so the Activities don't start stacking up
-                    finish();
-                }
-
-             break;
-
-            case R.id.action_signout:
-
-                if (mUser != null && mAuth != null) {
-                    mAuth.signOut();
-
-                    startActivity(new Intent(PostListActivity.this,  MainActivity.class));
-                    //clear the previous activity so the Activities don't start stacking up
-                    finish();
-                }
-             break;
-        }// end switch
-
-        return super.onOptionsItemSelected(item);
-    }// end boolean onOptionsItemSelected
 
     @Override
     protected void onStart() {
@@ -108,9 +70,10 @@ public class PostListActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 // map objects to Blog class (Blog.java)
-                 Blog blog = dataSnapshot.getValue(Blog.class);
+                Blog blog = dataSnapshot.getValue(Blog.class);
                 // add the objects to blogList
                 blogList.add(blog);
+                Collections.reverse(blogList);
 
                 blogRecyclerAdapter = new BlogRecyclerAdapter(PostListActivity.this, blogList);
                 recyclerView.setAdapter(blogRecyclerAdapter);
@@ -139,4 +102,40 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_signout) {
+            if (mUser !=null && mAuth !=null) {
+                Toast.makeText(PostListActivity.this, "Signed out",Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+
+                startActivity(new Intent(PostListActivity.this, MainActivity.class));
+                finish();
+            }
+        }
+
+        if (item.getItemId() == R.id.action_add) {
+            if (mUser !=null && mAuth !=null){
+                startActivity(new Intent(PostListActivity.this, AddPostActivity.class));
+                finish();
+        }
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }// end boolean onOptionsItemSelected
+
+
+
+
+    /*onCreateOptionsMenu &  onOptionsItemSelected allow menu to be inflated so we can see it */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
 }//end class PostListActivity extends AppCompatActivity

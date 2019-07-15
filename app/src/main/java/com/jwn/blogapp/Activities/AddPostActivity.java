@@ -32,6 +32,9 @@ import java.util.Map;
 
 public class AddPostActivity extends AppCompatActivity {
 
+    private static final String TAG = AddPostActivity.class.getSimpleName();
+
+
     private ImageButton mPostImage;
     private EditText mPostTitle, mPostDesc;
     private Button mSubmitButton;
@@ -95,9 +98,12 @@ public class AddPostActivity extends AppCompatActivity {
 
         if (requestCode == GALLERY_CODE && resultCode == RESULT_OK) {
             mImageUri = data.getData();
+
             mPostImage.setImageURI(mImageUri);
 
         }
+
+        //Log.d(TAG, "mImageUri in AddPostActivity is: " + mImageUri);
     }
 
 
@@ -112,6 +118,8 @@ public class AddPostActivity extends AppCompatActivity {
             mProgress.show();
 
             mStorage = FirebaseStorage.getInstance().getReference();
+
+
             filepath = mStorage.child("MBlog_images").child(mImageUri.getLastPathSegment());
             filepath.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot
                     , Task<Uri>>() {
