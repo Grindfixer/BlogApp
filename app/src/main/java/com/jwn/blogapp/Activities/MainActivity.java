@@ -41,6 +41,14 @@ public class MainActivity extends AppCompatActivity {
         emailField = findViewById(R.id.loginEmailEt);
         passwordField = findViewById(R.id.loginPasswordEt);
 
+        createActButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CreateAccountActivity.class));
+            }
+        });
+
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
