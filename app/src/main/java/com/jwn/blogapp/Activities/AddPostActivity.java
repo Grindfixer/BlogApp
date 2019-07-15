@@ -9,11 +9,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +44,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressDialog mProgress;
     private Uri mImageUri;
     private static final int GALLERY_CODE = 1;
+    StorageReference  filepath;
 
 
     @Override
@@ -64,7 +69,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         mPostImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 //get all types of images
                 galleryIntent.setType("image/*");
@@ -76,7 +81,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 // posting to the database
                 startPosting();
             }
@@ -96,49 +101,69 @@ public class AddPostActivity extends AppCompatActivity {
     }
 
 
-    private void startPosting() {
-        mProgress.setMessage("Posting to blog...");
-        mProgress.show();
 
-         final String titleVal = mPostTitle.getText().toString().trim();
-         final String descVal = mPostDesc.getText().toString().trim();
+    private void startPosting(){
 
-        if (!TextUtils.isEmpty(titleVal) && !TextUtils.isEmpty(descVal) && mImageUri != null) {
+        final String titleVal = mPostTitle.getText().toString().trim();
+        final String descVal = mPostDesc.getText().toString().trim();
+
+        if(!TextUtils.isEmpty(titleVal) && !TextUtils.isEmpty(descVal) && mImageUri !=null) {
             //start uploading
+            mProgress.show();
 
-            StorageReference filepath =
-                    mStorage.child("MBlog_images").child(mImageUri.getLastPathSegment());
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            mStorage = FirebaseStorage.getInstance().getReference();
+            filepath = mStorage.child("MBlog_images").child(mImageUri.getLastPathSegment());
+            filepath.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot
+                    , Task<Uri>>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
 
-                    String downloadurl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                    if (!task.isSuccessful()) {
 
-                    DatabaseReference newPost = mPostDatabase.push();
+                        throw  task.getException();
 
-                    Map<String, String> dataToSave = new HashMap<>();
-                    dataToSave.put("title", titleVal);
-                    dataToSave.put("desc", descVal);
-                    dataToSave.put("image", downloadurl);
-                    dataToSave.put("timestamp", String.valueOf(java.lang.System.currentTimeMillis()));
-                    dataToSave.put("userid", mUser.getUid());
+                    }
 
-                    newPost.setValue(dataToSave);
+                    return filepath.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
 
-                    mProgress.dismiss();
+                    if (task.isSuccessful()) {
 
-                    startActivity(new Intent(AddPostActivity.this, PostListActivity.class));
-                    finish();
+                        Uri downloadUri = task.getResult();
+
+
+                        DatabaseReference newPost = mPostDatabase.push();
+
+
+                        Map<String, String> dataToSave = new HashMap<>();
+                        dataToSave.put("title", titleVal);
+                        dataToSave.put("desc", descVal);
+                        dataToSave.put("image", downloadUri.toString());
+                        dataToSave.put("timestamp", String.valueOf(java.lang.System.currentTimeMillis()));
+                        dataToSave.put("userid", mUser.getUid());
+
+                        newPost.setValue(dataToSave);
+                        mProgress.dismiss();
+
+                        startActivity(new Intent(AddPostActivity.this, PostListActivity.class));
+                    }else{
+                        Toast.makeText(AddPostActivity.this, "Upload failure: " + task.getException()
+                                        .getMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             });
 
 
-
-
-
         }
-    }// end startPosting()
+
+    }// end start Posting
+
+
+
 
 
 }//end class AddPostActivity extends AppCompatActivity

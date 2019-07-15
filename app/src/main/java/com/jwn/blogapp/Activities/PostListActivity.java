@@ -51,8 +51,15 @@ public class PostListActivity extends AppCompatActivity {
         blogList = new ArrayList<>();
 
         recyclerView = findViewById(R.id.recyclerView);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        blogRecyclerAdapter = new BlogRecyclerAdapter(PostListActivity.this, blogList);
+
         recyclerView.setAdapter(blogRecyclerAdapter);
 
     }

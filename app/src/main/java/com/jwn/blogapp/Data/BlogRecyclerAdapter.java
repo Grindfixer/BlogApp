@@ -1,6 +1,7 @@
 package com.jwn.blogapp.Data;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import java.util.List;
 
 
 public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapter.ViewHolder>{
+
+    private static final String TAG = BlogRecyclerAdapter.class.getSimpleName();
 
     private Context context;
     private List<Blog> blogList;
@@ -42,8 +45,13 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+
+
         Blog blog = blogList.get(position);
         String imageUrl = null;
+
+        Log.d(TAG, "blog value is " + blog);
+
 
         //set up the widgets created inside ViewHolder
         holder.title.setText(blog.getTitle());
@@ -56,9 +64,11 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
         holder.timestamp.setText(formattedDate);
 
-        imageUrl = blog.getImage();
+       imageUrl = blog.getImage();
 
-
+     /* // imageUrl = "https://firebasestorage.googleapis.com/v0/b/fbintroudemy.appspot" +
+               ".com/o/MBlog_images%2Fimage%3A17?alt=media&token=c4d4cc8f-0cf6-481a-8874" +
+               "-8d18a4356623";*/
 
         //TODO: Use Picasso to load image
         Picasso.get().load(imageUrl).into(holder.image);
